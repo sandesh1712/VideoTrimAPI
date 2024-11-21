@@ -2,11 +2,12 @@ import fs from 'fs/promises';
 import path from 'path';
 import { S3Helper } from '../helpers/awsHelper';
 import { S3Client } from '@aws-sdk/client-s3';
-import { AWS_REGION, S3_BUCKET } from '../../config/constants';
+import { AWS_REGION, S3_BUCKET, URL_EXPIRY_IN_HOURS } from '../../config/constants';
 import { UploadedFile } from '../types/file.type';
 import { Video } from '../entities/Video';
 import { Repository } from 'typeorm';
 import { appDataSource } from '../dbSetup';
+import { NotFoundError } from '../errors/NotFoundError';
 
 export class VideoService{
    s3Helper:S3Helper
@@ -38,9 +39,8 @@ export class VideoService{
     const video = this.videoRepo.create(data);
     
     video.s3Url = s3Url;
-    
+    video.s3Key = key;
     video.size = file.size;
-    
     video.originalName = file.originalname;
     
     //cleanup
@@ -48,4 +48,19 @@ export class VideoService{
 
     return await this.videoRepo.save(video);
     }
+
+   async getPresignedUrl(id:number){
+      const { s3Key } = await this.findOneBy(id);
+      const expiry = +URL_EXPIRY_IN_HOURS*60*60
+      return await this.s3Helper.getPublicUrl(s3Key,expiry);
+   } 
+
+   async findOneBy(id){
+      const video = await this.videoRepo.findBy({id}); //there is findOneBy command in typeorm ,but it actually has an bug
+      
+      if(video.length === 0)
+        throw new NotFoundError("Video Not found!");
+      
+      return video[0];
+   }
 }
