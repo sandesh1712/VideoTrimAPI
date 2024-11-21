@@ -6,8 +6,8 @@ export class Video {
     @PrimaryGeneratedColumn() 
     id:number
     
-    @Column() 
-    length:number //sec
+    @Column()
+    size:number
    
     @ManyToOne(()=>User,u => u.videos)
     user:User
@@ -17,4 +17,10 @@ export class Video {
 
     @Column({type:'text'})
     description:string
+
+    @Column()
+    s3Url:string
+
+    @Column()
+    originalName:string
 }
