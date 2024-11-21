@@ -1,7 +1,8 @@
-import { CreateDateColumn } from "typeorm";
+import { CreateDateColumn, OneToMany } from "typeorm";
 import { UpdateDateColumn } from "typeorm";
 import { Column } from "typeorm";
 import { Entity, PrimaryGeneratedColumn } from "typeorm";
+import { Video } from "./Video";
 
 @Entity()
 export class User {
@@ -20,4 +21,7 @@ export class User {
 
     @Column({select:false})
     password:string
+
+    @OneToMany(()=>Video,v=>v.user)
+    videos:Video[]
 }
