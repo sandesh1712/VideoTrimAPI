@@ -12,6 +12,7 @@ export class VideoController {
         const file:UploadedFile = req.file
         
         const data = req.body
+        data.userId = req['userId'];
         
         try{
             const result = await this.videoService.createAndUpload(data,file);

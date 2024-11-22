@@ -11,3 +11,5 @@ export const allowedMinLimit = process.env.ALLOWED_MIN_LIMIT || '5'
 export const allowedMaxLimit = process.env.ALLOWED_MAX_LIMIT || '25'
 export const allowedMinSizeLimit = process.env.ALLOWED_MAX_SIZE_LIMIT || '1'
 export const allowedMaxSizeLimit = process.env.ALLOWED_MIN_SIZE_LIMIT || '10'
+
+export const JWT_SECRET= process.env.JWT_SECRET

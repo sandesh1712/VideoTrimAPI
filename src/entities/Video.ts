@@ -9,7 +9,7 @@ export class Video {
     @Column()
     size:number
    
-    @ManyToOne(()=>User,u => u.videos)
+    @ManyToOne(()=>User,u => u.videos,{eager:true})
     user:User
 
     @Column()
