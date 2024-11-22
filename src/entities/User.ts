@@ -1,5 +1,4 @@
-import { CreateDateColumn, Exclusion, OneToMany } from "typeorm";
-import { UpdateDateColumn } from "typeorm";
+import { OneToMany } from "typeorm";
 import { Column } from "typeorm";
 import { Entity, PrimaryGeneratedColumn } from "typeorm";
 import { Video } from "./Video";

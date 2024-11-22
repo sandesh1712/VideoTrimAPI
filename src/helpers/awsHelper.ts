@@ -2,6 +2,7 @@ import { PutObjectCommand, S3Client , GetObjectCommand, DeleteObjectCommand } fr
 import { getSignedUrl } from "@aws-sdk/s3-request-presigner";
 import fs from 'fs';
 import { Readable } from "stream";
+import { AWS_REGION, S3_BUCKET } from "../../config/constants";
 export class S3Helper {
     client:S3Client
     bucketName: string
@@ -83,3 +84,7 @@ export class S3Helper {
     }
 }
 
+export const s3Helper = new S3Helper(
+  new S3Client({ region: AWS_REGION }),
+  S3_BUCKET
+);

@@ -1,7 +1,6 @@
 import fs from "fs/promises";
 import path from "path";
 import { S3Helper } from "../helpers/awsHelper";
-import { S3Client } from "@aws-sdk/client-s3";
 import {
   AWS_REGION,
   S3_BUCKET,
@@ -9,23 +8,12 @@ import {
 import { UploadedFile } from "../types/file.type";
 import { Video } from "../entities/Video";
 import { Repository } from "typeorm";
-import { appDataSource } from "../dbSetup";
 import { NotFoundError } from "../errors/NotFoundError";
 import { VideoHelper } from "../helpers/videoHelper";
 import { TrimParams } from "../types/video.type";
 
 export class VideoService {
-  private s3Helper: S3Helper;
-  private videoRepo: Repository<Video>;
-  private videoHelper: VideoHelper;
-
-  constructor() {
-    this.s3Helper = new S3Helper(
-      new S3Client({ region: AWS_REGION }),
-      S3_BUCKET
-    );
-    this.videoHelper = new VideoHelper();
-    this.videoRepo = appDataSource.getRepository(Video);
+  constructor(private s3Helper:S3Helper , private videoHelper: VideoHelper,private videoRepo:Repository<Video>) {
   }
 
   async createAndUpload(data: Partial<Video>, file: UploadedFile) {

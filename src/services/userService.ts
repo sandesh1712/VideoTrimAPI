@@ -1,6 +1,5 @@
 import { Repository } from "typeorm";
 import jwt from 'jsonwebtoken';
-import { appDataSource } from "../dbSetup"
 import { User } from "../entities/User"
 import { PasswordHelper } from "../helpers/passwordHelper";
 import { AlreadyExistsError } from "../errors/AlreadyExists";
@@ -8,14 +7,12 @@ import { SignInOption } from "../types/user.type";
 import { NotFoundError } from "../errors/NotFoundError";
 import { JWT_SECRET } from "../../config/constants";
 export class UserService {
-    userRepo: Repository<User>
    
-    constructor(){
-        this.userRepo = appDataSource.getRepository(User);
+    constructor(private userRepo:Repository<User>){
     }
 
     async create(data:Partial<User>){
-      const existingUser = this.findOneBy({email:data.email});
+      const existingUser = await this.findOneBy({email:data.email});
       
        if(existingUser)
          throw new AlreadyExistsError("email already exists")
@@ -34,9 +31,9 @@ export class UserService {
 
     async signIn(signInoption:SignInOption){
        const user = await this.userRepo.createQueryBuilder('user')
-       .select(['user.email','user.password'])
-       .where('user.email = :email',{email: signInoption.email})
-       .getOne();
+        .select(['user.email','user.password'])
+        .where('user.email = :email',{email: signInoption.email})
+        .getOne();
 
        if(!user)
          throw new NotFoundError("User Not Found");
