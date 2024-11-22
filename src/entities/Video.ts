@@ -26,4 +26,7 @@ export class Video {
 
     @Column()
     s3Key:string
+
+    @Column()
+    duration:number
 }
