@@ -2,11 +2,7 @@ import { Request,Response } from "express";
 import { UserService } from "../services/userService";
 
 export class UserController {
-    userService:UserService
-    
-    constructor(){
-        this.userService = new UserService();
-    }
+    constructor(private userService:UserService){}
 
     async create(req:Request,res:Response){
         const body = req.body;       

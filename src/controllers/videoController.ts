@@ -2,10 +2,8 @@ import { Request,Response } from "express";
 import { VideoService } from "../services/videoService";
 import { UploadedFile } from "../types/file.type";
 export class VideoController {
-    videoService:VideoService
     
-    constructor(){
-       this.videoService = new VideoService;
+    constructor(private videoService:VideoService){
     }
 
     async upload(req:Request,res:Response){
