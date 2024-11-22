@@ -12,6 +12,7 @@ import { Repository } from "typeorm";
 import { appDataSource } from "../dbSetup";
 import { NotFoundError } from "../errors/NotFoundError";
 import { VideoHelper } from "../helpers/videoHelper";
+import { TrimParams } from "../types/video.type";
 
 export class VideoService {
   private s3Helper: S3Helper;
@@ -108,6 +109,65 @@ export class VideoService {
         `Error generating presigned URL for video id ${id}: ${err.message}`
       );
     }
+  }
+
+  async trim(id:number,trimParams:TrimParams){
+     // retrive video obj
+     const video = await this.findOneBy(id);
+
+     //check parameters are valid
+      if(!trimParams || !trimParams.from || !trimParams.trimLength || trimParams.trimLength < 1){
+       throw new Error("Missing trim parameters");
+      }
+      
+      if(trimParams.trimLength >= video.duration){
+         throw new Error(`Trim length of ${trimParams.trimLength} seconds exceeds video duration of ${video.duration} seconds.`);
+      }
+
+     //get object and store in disk
+      const downLoadPath = `tmp/${video.s3Key.split('/')[1]}`
+      const isDownloaded = await this.s3Helper.downloadVideo(video.s3Key,downLoadPath);
+
+      if (!isDownloaded) {
+         throw new Error("Error downloading the video from S3.");
+     }
+ 
+     // Trim the video using FFmpeg
+     const newName = this.videoHelper.getNewName(video.s3Key.split('/')[1]);
+     const outputPath = `tmp/${newName}`;
+ 
+     try {
+         // Call the trim method that will return the output path of the trimmed video
+         const trimmedvideo = await this.videoHelper.trimVideo(downLoadPath, outputPath, trimParams, video.duration);
+ 
+         // Now upload the trimmed video back to S3
+         const key = `videos/${newName}`;
+         const isUploaded = await this.s3Helper.uploadVideo(key, outputPath);
+ 
+         if (!isUploaded) {
+             throw new Error("Failed to upload the trimmed video to S3.");
+         }
+ 
+         // Update the database with the new S3 URL and other details
+         const s3Url = `https://${process.env.S3_BUCKET}.s3.${process.env.AWS_REGION}.amazonaws.com/${key}`;
+         const oldKey = video.s3Key;
+         video.s3Key = key;
+         video.s3Url = s3Url;
+         //video.size = await this.(outputPath); // You can use a utility method to get file size
+         await this.videoRepo.save(video); // Assuming you have a repository to update the video entry in DB
+         
+         // delete old Video
+         await this.s3Helper.deleteVideo(oldKey);
+        
+         console.log('Video trimming and upload completed successfully.');
+         return video;
+      }catch(err){
+
+      }finally{
+         // Cleanup local files (optional)
+         await fs.unlink(downLoadPath);
+         await fs.unlink(outputPath);
+      }
   }
 
   async findOneBy(id) {

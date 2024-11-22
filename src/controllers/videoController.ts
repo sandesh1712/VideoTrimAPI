@@ -30,4 +30,15 @@ export class VideoController {
             res.status(500).send(err.message);
         }
     }
+
+    async trim(req:Request,res:Response){
+        try{
+            const { id } = req.params; 
+            const trimParams = req.body;
+            const result = await this.videoService.trim(+id,trimParams);
+            res.send({url:result})
+        }catch(err){
+            res.status(500).send(err.message);
+        }
+    }
 }
