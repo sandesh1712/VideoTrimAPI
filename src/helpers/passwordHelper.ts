@@ -16,8 +16,7 @@ export class PasswordHelper {
     suppliedPassword: string
   ): Promise<boolean> {
     const [hashedPassword, salt] = storedPassword.split(".");
-    const hashedPasswordBuf = Buffer.from(hashedPassword, "hex");
-    const suppliedPasswordBuf = (await scryptAsync(suppliedPassword, salt, 64)) as Buffer;
-    return hashedPasswordBuf === suppliedPasswordBuf
+    const buf = (await scryptAsync(suppliedPassword, salt, 64)) as Buffer;
+    return storedPassword === `${buf.toString("hex")}.${salt}`
   }
 }

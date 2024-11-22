@@ -53,7 +53,7 @@ export class VideoService {
 
       // Upload to S3
       await this.s3Helper.uploadVideo(key, diskFile);
-      const s3Url = `https://${process.env.S3_BUCKET}.s3.${process.env.AWS_REGION}.amazonaws.com/${key}`;
+      const s3Url = `https://${S3_BUCKET}.s3.${AWS_REGION}.amazonaws.com/${key}`;
 
       // Create a video entity in DB with details
       const video = this.videoRepo.create(data);
@@ -149,7 +149,7 @@ export class VideoService {
          }
  
          // Update the database with the new S3 URL and other details
-         const s3Url = `https://${process.env.S3_BUCKET}.s3.${process.env.AWS_REGION}.amazonaws.com/${key}`;
+         const s3Url = `https://${S3_BUCKET}.s3.${AWS_REGION}.amazonaws.com/${key}`;
          const oldKey = video.s3Key;
          video.s3Key = key;
          video.s3Url = s3Url;
