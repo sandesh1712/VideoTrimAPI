@@ -11,4 +11,6 @@ videoRouter.post("/upload",upload.single('clip'),(req,res)=>videoController.uplo
 
 videoRouter.get('/publicurl/:id',(req,res)=>videoController.getPresignedUrl(req,res));
 
+videoRouter.put('/trim/:id',(req,res)=>videoController.trim(req,res));
+
 export default videoRouter;
