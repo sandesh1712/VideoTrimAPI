@@ -69,14 +69,9 @@ export class VideoService {
   }
 
   async getPresignedUrl(id: number) {
+    const video = await this.findOneBy(id);
+
     try {
-      // Retrieve the video metadata using the provided id
-      const video = await this.findOneBy(id);
-
-      if (!video) {
-        throw new Error(`Video with id ${id} not found.`);
-      }
-
       // Extract the s3Key from the video object
       const { s3Key } = video;
 
@@ -91,8 +86,6 @@ export class VideoService {
       );
       return presignedUrl;
     } catch (err) {
-      // Proper error handling to capture any issues
-      console.error("Error generating presigned URL:", err);
       throw new Error(
         `Error generating presigned URL for video id ${id}: ${err.message}`
       );

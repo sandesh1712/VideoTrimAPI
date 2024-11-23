@@ -14,8 +14,7 @@ const app = express();
 app.use(bodyParser.json());
 
 // swagger documentation
-app.use('/api/docs’',swaggerUi.serve,swaggerUi.setup(swaggerSpec));
-
+app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerSpec));
 
 app.use('/',authMiddleware);
 
