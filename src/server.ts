@@ -6,12 +6,18 @@ import { dbConnect } from "./dbSetup";
 import userRouter from "./routes/user";
 import videoRouter from "./routes/video";
 import { authMiddleware } from "./helpers/authHelper";
+import * as swaggerUi from 'swagger-ui-express';
+import { swaggerSpec } from "./swagger.config";
 
 const app = express();
 
 app.use(bodyParser.json());
 
-app.use('/**',authMiddleware);
+// swagger documentation
+app.use('/api/docs’',swaggerUi.serve,swaggerUi.setup(swaggerSpec));
+
+
+app.use('/',authMiddleware);
 
 //register routes
 app.use('/auth',userRouter);

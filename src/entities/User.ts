@@ -18,7 +18,7 @@ export class User {
     @Column({unique:true,nullable:false})
     email:string
 
-    @Column({select:false})
+    @Column({ select:false })
     password:string
 
     @OneToMany(()=>Video,v=>v.user)

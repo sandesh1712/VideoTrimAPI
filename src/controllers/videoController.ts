@@ -10,13 +10,13 @@ export class VideoController {
         const file:UploadedFile = req.file
         
         const data = req.body
-        data.userId = req['userId'];
+        data.user =  { id: req['userId']};
         
         try{
             const result = await this.videoService.createAndUpload(data,file);
             res.send(result)
         }catch(err){
-            res.send(err);
+            res.status(500).send(err.message);
         }        
     }
 
@@ -35,7 +35,7 @@ export class VideoController {
             const { id } = req.params; 
             const trimParams = req.body;
             const result = await this.videoService.trim(+id,trimParams);
-            res.send({url:result})
+            res.send(result)
         }catch(err){
             res.status(500).send(err.message);
         }

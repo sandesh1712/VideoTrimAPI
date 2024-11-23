@@ -4,9 +4,9 @@ import { NextFunction, Request, Response } from "express";
 
 
 export const authMiddleware = (req: Request, res: Response, next: NextFunction) => {
-    const excludedPath = ['/auth/sign_in','auth/sign_up']
+    const excludedPath = ['/auth/sign_in','/auth/sign_up']
 
-    if(excludedPath.includes(req.baseUrl)){
+    if(excludedPath.includes(req.url)){
         next();
         return
     }

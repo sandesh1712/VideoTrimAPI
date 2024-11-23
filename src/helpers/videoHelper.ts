@@ -27,8 +27,8 @@ export class VideoHelper {
           .setStartTime(trimTimes.start)   // Start time (in seconds) for trimming
           .setDuration(trimTimes.duration) // Duration (in seconds) of the trim
           .output(outputPath)        // Path where the trimmed video will be saved
-          .on('end', (res) => {
-            resolve(res); // Return the output path once done
+          .on('end', () => {
+            resolve(outputPath); // Return the output path once done
           })
           .on('error', (err) => {            
             reject(new Error('Error occurred while trimming video.'));
@@ -46,28 +46,17 @@ export class VideoHelper {
          throw new Error('Video is too long!');
        }
 
-       if(duration < +allowedMinSizeLimit){
-        throw new Error('Video is too short!');
+       if(size < +allowedMinSizeLimit){
+        throw new Error('Video size is too less!');
        }
-      if(duration > +allowedMaxSizeLimit){
-         throw new Error('Video is too long!');
+      if(size > +allowedMaxSizeLimit){
+         throw new Error('Video size is too big');
        }
     }
    
     private calculateTime(trimParams: TrimParams, videoDuration: number): TrimTimeLimit{
-        let start: number;
-        
-        let duration: number;
-
-        if (trimParams.from === TrimFrom.START) {
-            // When trimming from the start, the duration is the trimLength
-            start = 0;  // Start from the beginning
-            duration = trimParams.trimLength;
-        } else if (trimParams.from === TrimFrom.END) {
-            // When trimming from the end, calculate the start time and duration
-            start = videoDuration - trimParams.trimLength;
-            duration = trimParams.trimLength;
-        } 
+        let start= trimParams.from === TrimFrom.START ? trimParams.trimLength:0;
+        let duration= videoDuration - trimParams.trimLength;
         return { start, duration };
     }
 
