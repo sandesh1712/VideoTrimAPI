@@ -26,6 +26,8 @@ VideoVerse_assessment
    ALLOWED_MAX_SIZE_LIMIT=<min allowed video size in bytes>
    ALLOWED_MIN_SIZE_LIMIT=<max allowed video size in bytes>
    JWT_SECRET= <jwt secret>
+   AWS_ACCESS_KEY_ID=<aws key id>
+   AWS_SECRET_ACCESS_KEY=<aws access key>
   ```
  5. start server ```npm run start``` 
 
@@ -41,6 +43,9 @@ VideoVerse_assessment
 1. aws -> https://docs.aws.amazon.com/AWSJavaScriptSDK/v3/latest/client/s3/
 2. typeorm ->  https://typeorm.io/
 3. ffmpeg integration -> https://www.npmjs.com/package/fluent-ffmpeg
+
+# Swagger Docs
+1. run server and visit '/api-docs/' in browser
 
 # Tests
 1. to run tests -> ```npm run test```
