@@ -31,7 +31,7 @@ export class UserService {
 
     async signIn(signInoption:SignInOption){
        const user = await this.userRepo.createQueryBuilder('user')
-        .select(['user.email','user.password'])
+        .select(['user.email','user.password','user.id'])
         .where('user.email = :email',{email: signInoption.email})
         .getOne();
 

@@ -1,4 +1,4 @@
-import { Repository, SelectQueryBuilder } from "typeorm";
+import { Repository } from "typeorm";
 import { UserService } from "../../src/services/userService";
 import { User } from "../../src/entities/User";
 import { AlreadyExistsError } from "../../src/errors/AlreadyExists";
@@ -7,7 +7,6 @@ const mockSave = jest.fn();
 const mockFindBy = jest.fn();
 const mockCreate = jest.fn();
 
-const mockGetOne = jest.fn();
 
 const mockRepo: Partial<Repository<User>> = {
   save: mockSave,

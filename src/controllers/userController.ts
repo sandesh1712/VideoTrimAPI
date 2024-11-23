@@ -8,9 +8,10 @@ export class UserController {
         const body = req.body;       
         try{
             const user = await this.userService.create(body);
+            delete user.password;
             res.send(user);
         }catch(err){
-            res.status(500).send(err);
+            res.status(500).send(err.message);
         }
     }
 
@@ -21,7 +22,7 @@ export class UserController {
             const result = await this.userService.signIn(body);
             res.send(result);
         }catch(err){
-            res.status(500).send(err);
+            res.status(500).send(err.message);
         }
     }
 }

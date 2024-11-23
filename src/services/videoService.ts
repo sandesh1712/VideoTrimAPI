@@ -126,11 +126,13 @@ export class VideoService {
  
      try {
          // Call the trim method that will return the output path of the trimmed video
-         const trimmedvideo = await this.videoHelper.trimVideo(downLoadPath, outputPath, trimParams, video.duration);
- 
+         const trimmedVideoPath = await this.videoHelper.trimVideo(downLoadPath, outputPath, trimParams, video.duration);
+         const trimmedVideoMetadata = await this.videoHelper.getInfo(trimmedVideoPath);
          // Now upload the trimmed video back to S3
          const key = `videos/${newName}`;
-         const isUploaded = await this.s3Helper.uploadVideo(key, outputPath);
+         const diskFile = await fs.readFile(trimmedVideoPath as string);
+
+         const isUploaded = await this.s3Helper.uploadVideo(key,diskFile);
  
          if (!isUploaded) {
              throw new Error("Failed to upload the trimmed video to S3.");
@@ -141,7 +143,9 @@ export class VideoService {
          const oldKey = video.s3Key;
          video.s3Key = key;
          video.s3Url = s3Url;
-         //video.size = await this.(outputPath); // You can use a utility method to get file size
+         video.duration = trimmedVideoMetadata.duration
+         video.size = trimmedVideoMetadata.size
+
          await this.videoRepo.save(video); // Assuming you have a repository to update the video entry in DB
          
          // delete old Video
