@@ -1,11 +1,4 @@
-VideoVerse_assessment
-
-# Assumptions Made
-1. This is an video storing/sharing service
-2. User can upload /trim videos using this service
-3. user can trim their videos anytime they want either from start or end 
-4. The video size and length limits are configurable in env variables and will be same for every user
-
+VideoEditAPI
 
 # Prerequisite
  1. make sure nodejs is installed on your system
